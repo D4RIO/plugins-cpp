@@ -13,14 +13,14 @@
 
 # Now, all is the DEFAULT. If you call 'make', it calls for 'make all':
 
-all:plugin-test libplugin-1.so
+all:plugin-test libplugin-1.so libplugin-cpp.so
 
 
 
 # If you call 'make clean', you mean this:
 
 clean:
-	rm -f *.o *.~ libplugin-1.so plugin-test
+	rm -f *.o *.~ libplugin-1.so plugin-test libplugin-cpp.so
 
 
 
@@ -40,11 +40,31 @@ plugin-content.o:plugin-content.cpp
 
 
 
-# Now the binaries. $@ is the TARGET.
 
-plugin-test: plugin.o plugin-test.o
-	g++ -o $@ $^ -ldl
+# Now the binaries. $@ is the TARGET. $< means the first PREREQUISITE.
 
-libplugin-1.so: plugin-content.o
-	g++ -o $@ -shared -fPIC $^
+plugin-test: plugin-test.o libplugin-cpp.so
+	g++ -o $@ $< -ldl -rdynamic -L. -lplugin-cpp
+
+
+
+
+# This is the Plugin and PluginLoader class library. This will let you
+# get your own plugins loaded at runtime. If you don't want to install it
+# (like for testing purposes), you can define LD_LIBRARY_PATH to ./
+
+libplugin-cpp.so: plugin.o
+	g++ -shared -fPIC $^ -o $@
+
+
+
+
+# And finally this. Here there is a trick about using g++ to access the linker.
+# If you put -lplugin-cpp BEFORE the $<, the linker might not see the symbols
+# and just ignore libplugin-cpp.so entirely. To check for a wrong linkage,
+# you may use 'ldd -d libplugin-1.so'. If there are unresolved symbols, then
+# the linkage has just failed. As a good rule, -l fits nicely AT THE END.
+
+libplugin-1.so: plugin-content.o libplugin-cpp.so
+	g++ -o $@ -fPIC $< -shared -rdynamic -lplugin-cpp
 

@@ -8,11 +8,24 @@
  ** ***************************************************************************/
 int main(void)
 {
-    auto lib = dlopen ( "libplugin-1.so", 0 );
-    Plugin *plugin = (Plugin*) dlsym ( lib, "pluginLoader" );
+    auto lib = dlopen ( "./libplugin-1.so", RTLD_LAZY );
 
-    std::shared_ptr< Servicio > serviceProvided = plugin->gimi( "A message" );
+    if (!lib) {
+        std::cout << dlerror() << std::endl;
+        return 1;
+    }
+    
+    PluginLoader *loader = (PluginLoader*) dlsym ( lib, "pluginLoader" );
 
-    serviceProvided->print();
+    if (!loader) {
+        std::cout << dlerror() << std::endl;
+        return 1;
+    }
+
+    std::shared_ptr< Plugin > plugin = loader->get( "A message" );
+
+    plugin->print();
+
+    dlclose (lib);
     return 0;
 }

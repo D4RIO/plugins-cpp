@@ -1,15 +1,20 @@
+#ifndef _PLUGIN_HPP_
+#define _PLUGIN_HPP_
+
 #include <iostream>
 #include <memory>
 
-class Servicio
+class Plugin
 {
 public:
     std::string msg;
     virtual void print(void);
 };
 
-class Plugin
+class PluginLoader
 {
 public:
-    std::shared_ptr<Servicio> gimi(const std::string& s);
+    virtual std::shared_ptr< Plugin > get(const std::string& s);
 };
+
+#endif

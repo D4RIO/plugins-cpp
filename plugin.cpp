@@ -1,17 +1,13 @@
 #include "plugin.hpp"
 
-// forward declaration + static global object (loading purposes)
-class Plugin;
-Plugin pluginLoader;
-
 /** ***************************************************************************
  * @param
  * @return
  * @see
  ** ***************************************************************************/
-void Servicio::print(void)
+void Plugin::print(void)
 {
-    std::cout << msg << "\n";	
+    std::cout << "MESSAGE: " << std::endl;
 }
 
 /** ***************************************************************************
@@ -19,9 +15,9 @@ void Servicio::print(void)
  * @return
  * @see
  ** ***************************************************************************/
-std::shared_ptr<Servicio> Plugin::gimi(const std::string& s)
+std::shared_ptr< Plugin > PluginLoader::get(const std::string& s)
 {
-    auto r=std::make_shared<Servicio>();
+    auto r=std::make_shared< Plugin >();
     r->msg=s;
     return r;
 }
