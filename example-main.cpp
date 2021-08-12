@@ -8,7 +8,7 @@
  ** ***************************************************************************/
 int main(void)
 {
-    auto lib = dlopen ( "./libplugin-1.so", RTLD_LAZY );
+    auto lib = dlopen ( "./libexample-1.so", RTLD_LAZY );
 
     if (!lib) {
         std::cout << dlerror() << std::endl;

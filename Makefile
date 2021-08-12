@@ -13,14 +13,14 @@
 
 # Now, all is the DEFAULT. If you call 'make', it calls for 'make all':
 
-all:plugin-test libplugin-1.so libplugin-cpp.so
+all:example-main libexample-1.so libplugin-cpp.so
 
 
 
 # If you call 'make clean', you mean this:
 
 clean:
-	rm -f *.o *.~ libplugin-1.so plugin-test libplugin-cpp.so
+	rm -f *.o *.~ libexample-1.so example-main libplugin-cpp.so
 
 
 
@@ -35,15 +35,15 @@ clean:
 # This are using the generic rule above, see? plugin.o from plugin.cpp
 
 plugin.o:plugin.cpp
-plugin-test.o:plugin-test.cpp
-plugin-content.o:plugin-content.cpp
+example-main.o:example-main.cpp
+plugin-example.o:plugin-example.cpp
 
 
 
 
 # Now the binaries. $@ is the TARGET. $< means the first PREREQUISITE.
 
-plugin-test: plugin-test.o libplugin-cpp.so
+example-main: example-main.o libplugin-cpp.so
 	g++ -o $@ $< -ldl -rdynamic -L. -lplugin-cpp
 
 
@@ -62,9 +62,9 @@ libplugin-cpp.so: plugin.o
 # And finally this. Here there is a trick about using g++ to access the linker.
 # If you put -lplugin-cpp BEFORE the $<, the linker might not see the symbols
 # and just ignore libplugin-cpp.so entirely. To check for a wrong linkage,
-# you may use 'ldd -d libplugin-1.so'. If there are unresolved symbols, then
+# you may use 'ldd -d libexample-1.so'. If there are unresolved symbols, then
 # the linkage has just failed. As a good rule, -l fits nicely AT THE END.
 
-libplugin-1.so: plugin-content.o libplugin-cpp.so
+libexample-1.so: plugin-example.o libplugin-cpp.so
 	g++ -o $@ -fPIC $< -shared -rdynamic -lplugin-cpp
 
