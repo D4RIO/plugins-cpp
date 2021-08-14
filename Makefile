@@ -44,17 +44,17 @@ plugin-example.o:plugin-example.cpp
 # Now the binaries. $@ is the TARGET. $< means the first PREREQUISITE.
 
 example-main: example-main.o libplugin-cpp.so
-	g++ -o $@ $< -ldl -rdynamic -L. -lplugin-cpp
+	g++ -o $@ $< -L. -lplugin-cpp
 
 
 
 
-# This is the Plugin and PluginLoader class library. This will let you
+# This is the Plugin and PluginFactory class library. This will let you
 # get your own plugins loaded at runtime. If you don't want to install it
 # (like for testing purposes), you can define LD_LIBRARY_PATH to ./
 
 libplugin-cpp.so: plugin.o
-	g++ -shared -fPIC $^ -o $@
+	g++ -shared -fPIC $^ -o $@ -ldl
 
 
 
@@ -66,5 +66,5 @@ libplugin-cpp.so: plugin.o
 # the linkage has just failed. As a good rule, -l fits nicely AT THE END.
 
 libexample-1.so: plugin-example.o libplugin-cpp.so
-	g++ -o $@ -fPIC $< -shared -rdynamic -lplugin-cpp
+	g++ -o $@ -fPIC $< -shared -L. -rdynamic -lplugin-cpp
 

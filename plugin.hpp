@@ -1,20 +1,26 @@
 #ifndef _PLUGIN_HPP_
 #define _PLUGIN_HPP_
 
-#include <iostream>
-#include <memory>
+#include <memory> // std::shared_ptr is a must
 
-class Plugin
+namespace d
 {
-public:
-    std::string msg;
-    virtual void print(void);
-};
 
-class PluginLoader
-{
-public:
-    virtual std::shared_ptr< Plugin > get(const std::string& s);
-};
+    class Plugin
+    {
+    public:
+        virtual void print( void );
+    };
+
+    class PluginFactory
+    {
+    public:
+        virtual std::shared_ptr< Plugin > get( void );
+    };
+
+    extern std::shared_ptr< Plugin > plugin ( const std::string& s );
+    extern std::shared_ptr< Plugin > plugin ( const char *s );
+
+}
 
 #endif
